@@ -17,12 +17,13 @@ bool direction = FOWARD;
 
 const int ch1 = 2;  // motor principal
 const int ch2 = 3;  // servo motor
-const int servo_pin = 6;
-const int foward_pwm = 10;
-const int reverse_pwm = 9;
 
-const int forward_enable = 4;
-const int reverse_enable = 5;
+const int servo_pin = 9 ;
+const int foward_pwm = 5;
+const int reverse_pwm = 6;
+
+const int forward_enable =7 ;
+const int reverse_enable = 8;
 
 volatile unsigned long motor_start_time = 0, motor_current_time = 0, motor_pulses = 0;
 volatile unsigned long servo_start_time = 0, servo_current_time = 0, servo_pulses = 0;
@@ -52,17 +53,18 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(ch1), motorPulseTime, CHANGE);
   digitalWrite(forward_enable,LOW);
   digitalWrite(reverse_enable,LOW);
-  digitalWrite(foward_pwm,LOW);
-  digitalWrite(reverse_pwm,LOW);
-
+  
   servo.write(0);
 }
 
 void loop() {
   delay(100);
-
-  setAngle();
-  motorControl();
+  //setAngle();
+  //motorControl();
+  digitalWrite(forward_enable, HIGH);
+  digitalWrite(reverse_enable, LOW);
+  analogWrite(foward_pwm, 255);
+  analogWrite(reverse_pwm, 0);
   if (DEBUG) {
     debbuger();
   }
