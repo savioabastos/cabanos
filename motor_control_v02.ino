@@ -33,7 +33,7 @@ void motorPulseTime();
 void servoPulseTime();
 bool setDirection();
 int setSpeed();
-void setAngle();
+int setAngle();
 void motorControl();
 
 void setup() {
@@ -50,14 +50,18 @@ void setup() {
 
   attachInterrupt(digitalPinToInterrupt(ch2), servoPulseTime, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ch1), motorPulseTime, CHANGE);
+  digitalWrite(forward_enable,LOW);
+  digitalWrite(reverse_enable,LOW);
+  digitalWrite(foward_pwm,LOW);
+  digitalWrite(reverse_pwm,LOW);
 
   servo.write(0);
 }
 
 void loop() {
   delay(100);
-  setAngle();
 
+  setAngle();
   motorControl();
   if (DEBUG) {
     debbuger();
@@ -98,16 +102,17 @@ bool setDirection() {
 
 int setSpeed() {
   int intensity = abs(motor_pulse_width - 1500);
-
   speed = map(intensity, 0, 500, 0, 255);
   return speed;
 }
 
-void setAngle() {
+int setAngle() {
   angle = map(servo_pulse_width - 1000, 0, 1000, 0, 180);
   angle = constrain(angle, 0, 180);
   servo.write(angle);
- 
+  if(DEBUG){
+    return angle;
+  }
  
 }
 
@@ -117,12 +122,14 @@ void motorControl() {
 
   if (dir == 0) {
     digitalWrite(forward_enable, HIGH);
-    digitalWrite(reverse_enable, LOW);
+    digitalWrite(reverse_enable, HIGH);
     analogWrite(foward_pwm, spe);
+    analogWrite(reverse_pwm, 0);
   } else {
-    digitalWrite(forward_enable, LOW);
+    digitalWrite(forward_enable, HIGH);
     digitalWrite(reverse_enable, HIGH);
     analogWrite(reverse_pwm, spe);
+    analogWrite(foward_pwm, 0);
   }
 }
 
@@ -147,7 +154,7 @@ void debbuger() {
     Serial.print("\t");
 
     Serial.print("SERVO ANGLE: ");
-    Serial.print("");
+    Serial.print(setAngle());
     Serial.print("\n");
   }
 }
