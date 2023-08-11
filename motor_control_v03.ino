@@ -21,6 +21,8 @@ const int ch2 = 3;  // servo motor
 const int servo_pin = 9 ;
 const int foward_pwm = 5;
 const int reverse_pwm = 6;
+const int vcc = 10;
+const int gnd = 11; 
 
 const int forward_enable =7 ;
 const int reverse_enable = 8;
@@ -46,25 +48,27 @@ void setup() {
   pinMode(reverse_enable, OUTPUT);
   pinMode(foward_pwm, OUTPUT);
   pinMode(reverse_pwm, OUTPUT);
-  //pinMode(servo_pin, OUTPUT);
+  pinMode(servo_pin, OUTPUT);
   servo.attach(servo_pin);
 
   attachInterrupt(digitalPinToInterrupt(ch2), servoPulseTime, CHANGE);
   attachInterrupt(digitalPinToInterrupt(ch1), motorPulseTime, CHANGE);
   digitalWrite(forward_enable,LOW);
   digitalWrite(reverse_enable,LOW);
+  pinMode(vcc, OUTPUT);
+  pinMode(gnd,OUTPUT );
+  digitalWrite(vcc, HIGH);
+  digitalWrite(gnd, LOW);
+
   
   servo.write(0);
 }
 
 void loop() {
-  delay(100);
-  //setAngle();
-  //motorControl();
-  digitalWrite(forward_enable, HIGH);
-  digitalWrite(reverse_enable, LOW);
-  analogWrite(foward_pwm, 255);
-  analogWrite(reverse_pwm, 0);
+  delay(10);
+  setAngle();
+  motorControl();
+ 
   if (DEBUG) {
     debbuger();
   }
